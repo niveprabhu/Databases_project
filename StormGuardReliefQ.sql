@@ -14,3 +14,32 @@ WHERE r.Active = 'Active';
 
 
 #Queries By Ayodeji Joseph Adeogun
+SELECT 
+    r.Relief_id, 
+    r.Title, 
+    r.Type, 
+    r.Active, 
+    l.Delivery_Status
+FROM 
+    Relief r
+JOIN 
+    Logistics l ON r.Relief_id = l.Relief_id
+WHERE 
+    r.Active = 'Active';
+    
+    SELECT 
+    r.Title AS Relief_Title,
+    r.Type,
+    r.Active,
+    l.Supply_Status,
+    l.Delivery_Status,
+    v.Assigned_Region,
+    COUNT(v.Volunteer_id) AS Total_Volunteers
+FROM 
+    Relief r
+JOIN 
+    Logistics l ON r.Relief_id = l.Relief_id
+JOIN 
+    Volunteer v ON v.Assigned_Region IS NOT NULL
+GROUP BY 
+    r.Title, r.Type, r.Active, l.Supply_Status, l.Delivery_Status, v.Assigned_Region;
