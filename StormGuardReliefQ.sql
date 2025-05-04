@@ -27,14 +27,14 @@ JOIN
 WHERE 
     r.Active = 'Active';
     
-    SELECT 
+SELECT 
     r.Title AS Relief_Title,
     r.Type,
     r.Active,
     l.Supply_Status,
     l.Delivery_Status,
     v.Assigned_Region,
-    COUNT(v.Volunteer_id) AS Total_Volunteers
+COUNT(v.Volunteer_id) AS Total_Volunteers
 FROM 
     Relief r
 JOIN 
