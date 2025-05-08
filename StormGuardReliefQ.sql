@@ -1,4 +1,4 @@
-USE StormGuardReliefDB2;
+USE StormGuardReliefDB;
 
 -- Queries By Nivedita Prabhu
 
