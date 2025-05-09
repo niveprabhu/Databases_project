@@ -51,14 +51,17 @@ HAVING
 
 -- Queries By Nicholas Scott Marshall
 
-# Basic 1: one sentence description in the comment 
+# Basic 1: Retrieves all logistics entries with a delivery status of 'Ongoing'.
 SELECT *
 	FROM Logistics
 	WHERE Delivery_Status = 'Ongoing';
 
-# Basic 2: one sentence description in the comment 
+# Basic 2: Retrieves all records from the Relief table where the priority level is 'High'.
+SELECT *
+	FROM Relief
+	WHERE Priority_Level = 'High';
 
-# Advanced 1 : one sentence description in the comment 
+# Advanced 1: Lists each location with the total number of relief requests and the titles of those requests.
 SELECT l.Name AS Location,
 	COUNT(r.Relief_id) AS Total_Relief_Requests,
 	GROUP_CONCAT(r.Title SEPARATOR ', ') AS Relief_Titles
@@ -66,10 +69,25 @@ SELECT l.Name AS Location,
 	JOIN Country_Requests_Relief cr ON l.Country_id = cr.Country_id
 	JOIN Relief r ON cr.Relief_id = r.Relief_id
 	GROUP BY l.Name;
-    
-# Advanced 2: one sentence description in the comment
 
-# Advanced 3: one sentence description in the comment  
+# Advanced 2: Shows the number of volunteers assigned to each relief effort along with the relief title.
+SELECT r.Title AS Relief_Title,
+       COUNT(v.Volunteer_id) AS Number_of_Volunteers
+	FROM Relief r
+	JOIN Volunteer_Assigned_Relief var ON r.Relief_id = var.Relief_id
+	JOIN Volunteer v ON var.Volunteer_id = v.Volunteer_id
+	GROUP BY r.Title;
+
+# Advanced 3: Displays each hurricane's name, affected locations, and the total number of relief efforts provided per hurricane.
+SELECT h.Name AS Hurricane_Name,
+       GROUP_CONCAT(DISTINCT l.Name SEPARATOR ', ') AS Affected_Locations,
+       COUNT(DISTINCT r.Relief_id) AS Total_Relief_Efforts
+	FROM Hurricane h
+	JOIN Hurricane_Affects_Location hl ON h.Hurricane_id = hl.Hurricane_id
+	JOIN Location l ON hl.Location_id = l.Location_id
+	JOIN Country_Requests_Relief cr ON l.Country_id = cr.Country_id
+	JOIN Relief r ON cr.Relief_id = r.Relief_id
+	GROUP BY h.Name;
 
 /*_______________________________________________________________________*/
 
