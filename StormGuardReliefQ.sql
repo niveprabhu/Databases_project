@@ -89,6 +89,9 @@ SELECT
 
 # Basic 2: one sentence description in the comment 
 
+SELECT Relief_id, Title, Type, Active
+FROM Relief;
+
 # Advanced 1: one sentence description in the comment 	
 SELECT 
     r.Title AS Relief_Title,
@@ -105,5 +108,26 @@ SELECT
 	GROUP BY r.Title, r.Type, r.Active, l.Supply_Status, l.Delivery_Status, v.Assigned_Region;
     
 # Advanced 2: one sentence description in the comment
+SELECT 
+    r.Relief_id,
+    r.Title,
+    l.Supply_Status,
+    l.Delivery_Status,
+    COUNT(vr.Volunteer_id) AS Assigned_Volunteers
+FROM Relief r
+JOIN Logistics l ON r.Relief_id = l.Relief_id
+LEFT JOIN Volunteer_Relief vr ON r.Relief_id = vr.Relief_id
+WHERE r.Active = 'Active'
+GROUP BY r.Relief_id, r.Title, l.Supply_Status, l.Delivery_Status;
 
 # Advanced 3: one sentence description in the comment  
+SELECT 
+    v.Assigned_Region,
+    COUNT(DISTINCT r.Relief_id) AS Relief_Count,
+    COUNT(DISTINCT v.Volunteer_id) AS Volunteers,
+    GROUP_CONCAT(DISTINCT l.Delivery_Status SEPARATOR ', ') AS Delivery_Statuses
+FROM Volunteer v
+JOIN Volunteer_Relief vr ON v.Volunteer_id = vr.Volunteer_id
+JOIN Relief r ON vr.Relief_id = r.Relief_id
+JOIN Logistics l ON r.Relief_id = l.Relief_id
+GROUP BY v.Assigned_Region;
