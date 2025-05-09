@@ -4,48 +4,33 @@ USE StormGuardReliefDB;
 
 # Basic 1: Gets the names of Each Hurricane
 SELECT Name 
-	FROM Hurricane;
+FROM Hurricane;
+    
 # Basic 2:  Get all relief efforts that are not active.
-SELECT 
-    Relief_id, Title, Type 
-FROM 
-    Relief 
-WHERE 
-    Active != 'Active';
+SELECT Relief_id, Title, Type 
+FROM Relief 
+WHERE Active != 'Active';
 
 # Advanced 1 Retrieves the first and last names of volunteers along with the titles of the active relief efforts they are currently assigned to.
 SELECT v.First_Name, v.Last_Name, r.Title
-	FROM Volunteer v
-	JOIN Volunteer_Relief vr ON v.Volunteer_id = vr.Volunteer_id
-	JOIN Relief r ON vr.Relief_id = r.Relief_id
-	WHERE r.Active = 'Active';
+FROM Volunteer v
+JOIN Volunteer_Relief vr ON v.Volunteer_id = vr.Volunteer_id
+JOIN Relief r ON vr.Relief_id = r.Relief_id
+WHERE r.Active = 'Active';
     
 # Advanced 2: Find countries affected by hurricanes with severity >= 4 and list the hurricanes with their severity.
-SELECT 
-    l.Name AS Country, 
-    h.Name AS Hurricane, 
-    h.Severity
-FROM 
-    Hurricane h
-JOIN 
-    Hurricane_Affects ha ON h.Event_id = ha.Event_id
-JOIN 
-    Location l ON ha.Country_id = l.Country_id
-WHERE 
-    h.Severity >= 4
-ORDER BY 
-    h.Severity DESC;
+SELECT l.Name AS Country, h.Name AS Hurricane, h.Severity
+FROM Hurricane h
+JOIN Hurricane_Affects ha ON h.Event_id = ha.Event_id
+JOIN Location l ON ha.Country_id = l.Country_id
+WHERE h.Severity >= 4
+ORDER BY h.Severity DESC;
 
 # Advanced 3: List the number of volunteers per region and show only regions with more than 5 volunteers.
-SELECT 
-    Assigned_Region, 
-    COUNT(Volunteer_id) AS Volunteer_Count
-FROM 
-    Volunteer
-GROUP BY 
-    Assigned_Region
-HAVING 
-    Volunteer_Count > 5;
+SELECT Assigned_Region, COUNT(Volunteer_id) AS Volunteer_Count
+FROM Volunteer
+GROUP BY Assigned_Region
+HAVING Volunteer_Count > 5;
     
 /*_______________________________________________________________________*/
 
@@ -56,10 +41,10 @@ SELECT *
 	FROM Logistics
 	WHERE Delivery_Status = 'Ongoing';
 
-# Basic 2: Retrieves all records from the Relief table where the priority level is 'High'.
-SELECT *
-	FROM Relief
-	WHERE Priority_Level = 'High';
+# Basic 2: Retrieves all records from the Hurricane table where the severity level is above or equal to 3.
+SELECT Name, Severity
+FROM Hurricane
+WHERE Severity >= 3;
 
 # Advanced 1: Lists each location with the total number of relief requests and the titles of those requests.
 SELECT l.Name AS Location,
@@ -73,21 +58,22 @@ SELECT l.Name AS Location,
 # Advanced 2: Shows the number of volunteers assigned to each relief effort along with the relief title.
 SELECT r.Title AS Relief_Title,
        COUNT(v.Volunteer_id) AS Number_of_Volunteers
-	FROM Relief r
-	JOIN Volunteer_Assigned_Relief var ON r.Relief_id = var.Relief_id
-	JOIN Volunteer v ON var.Volunteer_id = v.Volunteer_id
-	GROUP BY r.Title;
+FROM Relief r
+JOIN Volunteer_Relief vr ON r.Relief_id = vr.Relief_id
+JOIN Volunteer v ON vr.Volunteer_id = v.Volunteer_id
+GROUP BY r.Title;
 
 # Advanced 3: Displays each hurricane's name, affected locations, and the total number of relief efforts provided per hurricane.
-SELECT h.Name AS Hurricane_Name,
-       GROUP_CONCAT(DISTINCT l.Name SEPARATOR ', ') AS Affected_Locations,
-       COUNT(DISTINCT r.Relief_id) AS Total_Relief_Efforts
-	FROM Hurricane h
-	JOIN Hurricane_Affects_Location hl ON h.Hurricane_id = hl.Hurricane_id
-	JOIN Location l ON hl.Location_id = l.Location_id
-	JOIN Country_Requests_Relief cr ON l.Country_id = cr.Country_id
-	JOIN Relief r ON cr.Relief_id = r.Relief_id
-	GROUP BY h.Name;
+SELECT 
+    h.Name AS Hurricane_Name,
+    GROUP_CONCAT(DISTINCT l.Name SEPARATOR ', ') AS Affected_Locations,
+    COUNT(DISTINCT r.Relief_id) AS Total_Relief_Efforts
+FROM Hurricane h
+JOIN Hurricane_Affects ha ON h.Event_id = ha.Event_id
+JOIN Location l ON ha.Country_id = l.Country_id
+JOIN Country_Requests_Relief cr ON l.Country_id = cr.Country_id
+JOIN Relief r ON cr.Relief_id = r.Relief_id
+GROUP BY h.Name;
 
 /*_______________________________________________________________________*/
 
