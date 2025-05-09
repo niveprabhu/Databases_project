@@ -41,10 +41,11 @@ SELECT *
 	FROM Logistics
 	WHERE Delivery_Status = 'Ongoing';
 
-# Basic 2: Retrieves all records from the Hurricane table where the severity level is above or equal to 3.
-SELECT Name, Severity
-FROM Hurricane
-WHERE Severity >= 3;
+# Basic 2: Retrieves all relief efforts that include the word "Medical" in their description.
+SELECT Relief_id, Title, Type, Active
+FROM Relief
+WHERE Description LIKE '%Medical%';
+
 
 # Advanced 1: Lists each location with the total number of relief requests and the titles of those requests.
 SELECT l.Name AS Location,
@@ -55,25 +56,38 @@ SELECT l.Name AS Location,
 	JOIN Relief r ON cr.Relief_id = r.Relief_id
 	GROUP BY l.Name;
 
-# Advanced 2: Shows the number of volunteers assigned to each relief effort along with the relief title.
-SELECT r.Title AS Relief_Title,
-       COUNT(v.Volunteer_id) AS Number_of_Volunteers
-FROM Relief r
-JOIN Volunteer_Relief vr ON r.Relief_id = vr.Relief_id
-JOIN Volunteer v ON vr.Volunteer_id = v.Volunteer_id
-GROUP BY r.Title;
-
-# Advanced 3: Displays each hurricane's name, affected locations, and the total number of relief efforts provided per hurricane.
+# Advanced 2: Lists each hurricane with its severity and the number of countries it has affected.
 SELECT 
     h.Name AS Hurricane_Name,
-    GROUP_CONCAT(DISTINCT l.Name SEPARATOR ', ') AS Affected_Locations,
-    COUNT(DISTINCT r.Relief_id) AS Total_Relief_Efforts
-FROM Hurricane h
-JOIN Hurricane_Affects ha ON h.Event_id = ha.Event_id
-JOIN Location l ON ha.Country_id = l.Country_id
-JOIN Country_Requests_Relief cr ON l.Country_id = cr.Country_id
-JOIN Relief r ON cr.Relief_id = r.Relief_id
-GROUP BY h.Name;
+    h.Severity,
+    COUNT(ha.Country_id) AS Affected_Countries
+FROM 
+    Hurricane h
+JOIN 
+    Hurricane_Affects ha ON h.Event_id = ha.Event_id
+GROUP BY 
+    h.Name, h.Severity
+ORDER BY 
+    h.Severity DESC;
+
+
+# Advanced 3: Shows each country and the number of active relief efforts it is currently requesting.
+SELECT 
+    l.Name AS Country_Name,
+    COUNT(r.Relief_id) AS Active_Relief_Efforts
+FROM 
+    Location l
+JOIN 
+    Country_Requests_Relief crr ON l.Country_id = crr.Country_id
+JOIN 
+    Relief r ON crr.Relief_id = r.Relief_id
+WHERE 
+    r.Active = 'Active'
+GROUP BY 
+    l.Name
+ORDER BY 
+    Active_Relief_Efforts DESC;
+
 
 /*_______________________________________________________________________*/
 
