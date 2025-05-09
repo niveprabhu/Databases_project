@@ -75,8 +75,7 @@ SELECT l.Name AS Location,
 
 -- Queries By Ayodeji Joseph Adeogun
 
-# Basic 1: one sentence description in the comment 
--- List of relielf efforts along with attributes such as ID, location, status ECT.
+# Basic 1: List of relielf efforts along with attributes such as ID, location, status ECT.
 SELECT 
     r.Relief_id, 
     r.Title, 
@@ -88,13 +87,11 @@ SELECT
 	JOIN Logistics l ON r.Relief_id = l.Relief_id
 	WHERE r.Active = 'Active';
 
-# Basic 2: one sentence description in the comment 
--- List all relief efforts with their status and types
+# Basic 2: List all relief efforts with their status and types
 SELECT Relief_id, Title, Type, Active
 FROM Relief;
 
-# Advanced 1: one sentence description in the comment 	
--- List of all relief and attributes of the relief along with the regions for someone like a head admin to access
+# Advanced 1: List of all relief and attributes of the relief along with the regions for someone like a head admin to access
 SELECT 
     r.Title AS Relief_Title,
     r.Type,
@@ -109,8 +106,7 @@ SELECT
 	JOIN Volunteer v ON v.Assigned_Region IS NOT NULL
 	GROUP BY r.Title, r.Type, r.Active, l.Supply_Status, l.Delivery_Status, v.Assigned_Region;
     
-# Advanced 2: one sentence description in the comment
--- Active relief efforts providing logistics and number of assigned volunteers
+# Advanced 2: Active relief efforts providing logistics and number of assigned volunteers
 SELECT 
     r.Relief_id,
     r.Title,
@@ -123,8 +119,7 @@ LEFT JOIN Volunteer_Relief vr ON r.Relief_id = vr.Relief_id
 WHERE r.Active = 'Active'
 GROUP BY r.Relief_id, r.Title, l.Supply_Status, l.Delivery_Status;
 
-# Advanced 3: one sentence description in the comment
--- Relief efforts per region showing number of reliefs, volunteers, and logistics status  
+# Advanced 3: Relief efforts per region showing number of reliefs, volunteers, and logistics status  
 SELECT 
     v.Assigned_Region,
     COUNT(DISTINCT r.Relief_id) AS Relief_Count,
