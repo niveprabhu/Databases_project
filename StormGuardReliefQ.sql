@@ -26,11 +26,11 @@ JOIN Location l ON ha.Country_id = l.Country_id
 WHERE h.Severity >= 4
 ORDER BY h.Severity DESC;
 
-# Advanced 3: List the number of volunteers per region and show only regions with more than 5 volunteers.
+# Advanced 3: List the number of volunteers per region and show only regions with more than 2 volunteers.
 SELECT Assigned_Region, COUNT(Volunteer_id) AS Volunteer_Count
 FROM Volunteer
 GROUP BY Assigned_Region
-HAVING Volunteer_Count > 5;
+HAVING Volunteer_Count > 2;
     
 /*_______________________________________________________________________*/
 
